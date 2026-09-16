@@ -1,0 +1,159 @@
+openapi: 3.0.3
+info:
+  title: Membership Service API
+  version: 1.0.0
+  description: |
+    Membership bounded context (`02-domain/domain-map.md`): student records —
+    registration, and lookup by ID. See
+    `09-microservices/services/03-membership-service/README.md`.
+
+    ## Not applicable to this project (yet)
+    Search, edit, deactivate, and suspend are modeled in `02-domain/entities-and-rules.md`
+    (HU-03) and already implemented in code on `feat/HU-03-student-search-edit-deactivate`,
+    but that branch is not merged to `dev` yet — see
+    `04-requirements/traceability-matrix.md`. Only `POST /students` and
+    `GET /students/{id}` are live today; this contract will grow to cover the rest once that
+    branch merges.
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development, through the API gateway
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Students
+  - name: Health
+
+paths:
+  /health:
+    get:
+      summary: Liveness check
+      operationId: health
+      tags: [Health]
+      security: []
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    enum: [ok]
+
+  /students:
+    post:
+      summary: Register a new student
+      description: FR-003, FR-004 (HU-02). Rejects a duplicate `documentId`.
+      operationId: createStudent
+      tags: [Students]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStudentRequest'
+            example:
+              fullName: Jane Doe
+              documentId: "1075300000"
+              email: jane@example.edu
+              phone: "3001234567"
+      responses:
+        '201':
+          description: Student registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          $ref: './_shared.yaml#/components/responses/BadRequest'
+        '409':
+          description: This document ID is already registered
+          content:
+            application/json:
+              schema:
+                $ref: './_shared.yaml#/components/schemas/ErrorResponse'
+              example:
+                error: DOCUMENT_ID_ALREADY_EXISTS
+                message: This document ID is already registered
+        '401':
+          $ref: './_shared.yaml#/components/responses/Unauthorized'
+
+  /students/{id}:
+    get:
+      summary: Fetch a student by ID
+      description: |
+        Used internally by `circulation-service` (once it exists) to check loan eligibility —
+        Membership can no longer be reached by a SQL join now that Loan lives in a different
+        database (`09-microservices/data-ownership-matrix.md`).
+      operationId: getStudent
+      tags: [Students]
+      parameters:
+        - $ref: './_shared.yaml#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: The student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '404':
+          $ref: './_shared.yaml#/components/responses/NotFound'
+        '401':
+          $ref: './_shared.yaml#/components/responses/Unauthorized'
+
+components:
+  schemas:
+    CreateStudentRequest:
+      type: object
+      required: [fullName, documentId, email]
+      properties:
+        fullName:
+          type: string
+        documentId:
+          type: string
+          description: Institutional ID/document code — the business key used at the circulation desk
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+
+    Student:
+      type: object
+      required: [id, fullName, documentId, email, createdAt, updatedAt]
+      properties:
+        id:
+          $ref: './_shared.yaml#/components/schemas/UUID'
+        fullName:
+          type: string
+        documentId:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        suspendedUntil:
+          type: string
+          format: date-time
+          nullable: true
+          description: Set automatically on a late return; absent/null means not currently suspended
+        deactivatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Absent/null means active
+        createdAt:
+          $ref: './_shared.yaml#/components/schemas/Timestamp'
+        updatedAt:
+          $ref: './_shared.yaml#/components/schemas/Timestamp'
+
+  securitySchemes:
+    bearerAuth:
+      $ref: './_shared.yaml#/components/securitySchemes/bearerAuth'
