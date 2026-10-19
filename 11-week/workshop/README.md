@@ -8,7 +8,7 @@ Applied to the LMS (Library Management System) of team Group 2.
 - TEAM: Group 2 - LMS (code-corhuila)
 - DOCS_REPO: https://github.com/code-corhuila/library-docs
 - REFLECTION_DOC: https://docs.google.com/document/d/1Xn1s14c0UCqSO5IJdMU5HpkndiJW7APpVQ5sLPenr0E/edit?usp=sharing
-- JOURNEY: (written in CP1)
+- JOURNEY: HU-06 Register a loan (circulation-portal -> gateway -> circulation-api -> membership-api, catalog-api, MongoDB loan_db)
 <!-- CONFIG-END -->
 
 ## Checkpoints
@@ -16,7 +16,7 @@ Applied to the LMS (Library Management System) of team Group 2.
 | CP | File | Status |
 |---|---|---|
 | CP0 | README.md | done |
-| CP1 | 01-journey.md | pending |
-| CP2 | 02-log-contract.md | pending |
-| CP3 | 03-instrumentation/ | pending |
-| CP4 | 04-metrics.md | pending |
+| CP1 | 01-journey.md | done |
+| CP2 | 02-log-contract.md | done |
+| CP3 | 03-instrumentation/ | done |
+| CP4 | 04-metrics.md | done |
