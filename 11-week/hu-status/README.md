@@ -8,7 +8,7 @@
 - FULL_NAME: Hermes Pascuas Herrera
 - GITHUB_USER: Hermesss29
 - TEAM: G2
-- SPRINT_GOAL: Make the HU-06 loan registration journey of the LMS observable end to end (trace map, structured log contract, trace-context instrumentation for circulation-api with a test, and a golden-signals metric catalog) in the week 11 guided workshop, delivery 1.
+- SPRINT_GOAL: Make the HU-06 loan registration journey of the LMS observable end to end (trace map, structured log contract, trace-context instrumentation for circulation-api with a test, and a golden-signals metric catalog) in the week 11 guided workshop, then define SLOs, burn-rate alerts, a runbook and an incident drill for it (deliveries 1 and 2).
 <!-- CONFIG-END -->
 
 ## 1. User stories worked this week
@@ -22,7 +22,11 @@
 | HU-06 | W11 CP3 - context propagated to catalog-api, /metrics and test | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/374b96f |
 | HU-06 | W11 CP3 - how to run with real console output | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/34a85fe |
 | HU-06 | W11 CP4 - golden signals and metric catalog | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/58e1141 |
-| HU-06 | W11 CP6-CP10 - SLOs, burn-rate alerts, runbook, incident drill (delivery 2) | todo | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/tree/main/11-week/workshop |
+| HU-06 | W11 CP6 - SLIs, SLOs and error budget for loan registration | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/f92223a |
+| HU-06 | W11 CP7 - burn-rate alerting rules and alert policy | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/c55faa4 |
+| HU-06 | W11 CP8 - runbook for the fast-burn alert | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/1fd9248 |
+| HU-06 | W11 CP9 - incident drill (slow catalog-api) and blameless postmortem | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/commit/d9dd802 |
+| HU-06 | W11 CP10 - hu-status for delivery 2 and implementation plan in the reflection document | done | https://github.com/Hermesss29/sistemas-distribuidos-2026-b-g2/tree/main/11-week/workshop |
 
 ## 2. My individual contribution
 - Chose HU-06 Register a loan as the critical journey: circulation-portal, gateway, circulation-api, membership-api, catalog-api and MongoDB loan_db.
@@ -30,6 +34,9 @@
 - Defined the JSON log contract with LMS domain fields and the list of data never logged (document number, email, JWT, internal token).
 - Built a Go module for circulation-api with a traceparent middleware, a slog JSON logger, a catalog-api client that propagates the context, /metrics, and a test that checks the trace_id sent downstream.
 - Wrote the golden-signals catalog for circulation-api, membership-api and catalog-api.
+- Defined three SLOs for POST /api/v1/loans (availability 99.5 %, latency 99 % under 1 s, loan consistency 99.9 %) with the error budget and the team policy.
+- Wrote multi-window burn-rate alerts validated with promtool, the alert policy and the runbook for the fast-burn alert.
+- Ran an incident drill with a slow catalog-api and wrote a blameless postmortem with three user stories.
 
 ## 3. Blockers and risks
 - The real membershipclient and catalogclient do not forward X-Correlation-Id or traceparent, so logs of one loan cannot be joined today.
@@ -37,8 +44,8 @@
 - A timeout on loan-copy can leave a copy reserved without a loan (no saga compensation, ADR-008).
 
 ## 4. Plan for next week
-- Delivery 2 of the workshop (CP6-CP10): SLOs and error budget, burn-rate alerts, runbook and incident drill with postmortem.
-- Propose to the team adding the traceparent forwarding to the real circulation-api clients.
+- Propose to the team the postmortem stories: traceparent forwarding and a 1.5 s timeout with Idempotency-Key in the real catalogclient, and a separate connection pool for loan-copy in catalog-api.
+- Add Prometheus to the lms-qa compose to load 06-alerts.yml against real metrics.
 
 ## 5. Compliance self-check
 - [x] Conventional Commits - `type(scope): summary`
