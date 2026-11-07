@@ -23,8 +23,10 @@
 | HU-01 | lms-access-db roles and grants, changelog master, deploy executor and reconstruction CI | done | https://github.com/code-corhuila/lms-access-db/pull/3 |
 | HU-01 | lms-access-db local reconstruction check with Docker (update, no-op update, rollback-count 999, update) | done | https://github.com/code-corhuila/lms-access-db/pull/3#issuecomment-6677534241 |
 | HU-01 | lms-access-db README: structure, access_app user and local verification | done | https://github.com/code-corhuila/lms-access-db/pull/4 |
+| HU-01 | lms-access-db db-ci loads deploy/liquibase.properties and checks the per-domain changelog tables; .env.example aligned with compose.yml | done | https://github.com/code-corhuila/lms-access-db/pull/6 |
 | HU-08 | Promote lms-worker to qa (cherry-pick -x) | done | https://github.com/code-corhuila/lms-worker/pull/7 |
 | HU-01 | Promote lms-access-db to qa (cherry-pick -x) | done | https://github.com/code-corhuila/lms-access-db/pull/5 |
+| HU-01 | Promote the lms-access-db CI fix to qa (cherry-pick -x) | done | https://github.com/code-corhuila/lms-access-db/pull/7 |
 
 ## 2. My individual contribution
 - Finished lms-worker in small PRs to develop. It is a stateless Go service with hexagonal layers: driven ports in domain/notice, the three scheduled jobs in application/usecase and the HTTP clients, ticker and logger in infrastructure.
@@ -35,17 +37,15 @@
 - Found that the migration grants a role to access_app, a login that only lms-infra-postgres creates, so it fails on an empty CI database. Added a CI step that creates access_app first (57c64fa).
 - The org CI was blocked by a billing issue, so I ran the same reconstruction check locally with Docker. Without access_app it fails at dcl-grants-002 (Run: 6 of 7). With the fix the four steps pass. I left the evidence as a comment on PR #3.
 - Wrote both READMEs and promoted both repositories from develop to qa by re-application (git cherry-pick -x), never by merge.
+- Closed the follow-up from the retrospective: db-ci and the local check now load deploy/liquibase.properties, so migrations are tracked in databasechangelog_access as on the shared instance, and a CI step checks those tables exist. .env.example now lists the variables compose.yml reads.
 - Wrote the retrospective forum post about the access_app failure and replied to a teammate's post on the idempotency_keys upsert grant in lms-circulation-db.
 
 ## 3. Blockers and risks
 - The org account is locked by a billing issue, so db-ci has not run on GitHub yet. The local Docker check covers it until billing is fixed and the job is re-run.
 - The worker endpoints listed in its README do not exist yet in lms-circulation-api and lms-catalog-api. Until they do, those jobs log a failure on every tick.
-- Neither db-ci nor the local check loads deploy/liquibase.properties, so they use the default databasechangelog table instead of databasechangelog_access (Anexo J, J.6).
-- The lms-access-db .env.example lists POSTGRES_USER/POSTGRES_PASSWORD, but deploy/compose.yml reads PG_DATABASE, PG_ADMIN_USER and PG_ADMIN_PASSWORD.
 
 ## 4. Plan for next week
 - Cut the MVP3 release from main (release/<version>, cherry-pick -x from qa) once the version is announced, get the approval from ariel5253 and tag main.
-- Make db-ci load deploy/liquibase.properties and align .env.example with compose.yml.
 - Agree with the circulation and catalog owners on the three endpoints the worker needs.
 - Re-run db-ci on GitHub when billing is fixed.
 
@@ -62,3 +62,4 @@
 - lms-access-db develop: https://github.com/code-corhuila/lms-access-db/tree/develop
 - Local reconstruction check (Docker): https://github.com/code-corhuila/lms-access-db/pull/3#issuecomment-6677534241
 - Promotion to qa: https://github.com/code-corhuila/lms-worker/pull/7 and https://github.com/code-corhuila/lms-access-db/pull/5
+- Local check with liquibase.properties: https://github.com/code-corhuila/lms-access-db/pull/6
