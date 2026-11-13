@@ -1,27 +1,25 @@
-# Certification C3 — <Full name>
-
-> Template of the corte 3 certification. Replace every `<...>` with your data and delete this note. The rules are in the guide attached to the c3-certification activity in Moodle. Text left as `<...>` counts as missing.
+# Certification C3 — Hermes Pascuas Herrera
 
 ## Cover
 
 | Field | Value |
 |---|---|
-| Full name | <Full name exactly as in Moodle> |
-| GitHub user | <github-user> |
-| Group | <G1 or G2> |
-| Team | <Team name> |
-| Team -docs repository | <https://github.com/code-corhuila/...-docs> |
-| Course | <Exact course name> |
-| Course link | <Course URL> |
-| Start date | <YYYY-MM-DD> |
-| Completion date | <YYYY-MM-DD> |
+| Full name | Hermes Pascuas Herrera |
+| GitHub user | Hermesss29 |
+| Group | G2 |
+| Team | LMS Library |
+| Team -docs repository | https://github.com/code-corhuila/library-docs |
+| Course | HCCDP-Solution Architectures Course |
+| Course link | https://e.huawei.com/en/talent/ict-academy/#/ict-courses-detail?courseId=6WtKiPd1S1YelBB0AUbE1vXlPgk |
+| Start date | 2026-11-12 |
+| Completion date | 2026-11-13 |
 
 ## Study log
 
 | Date | Hours | Chapters or labs | Evidence file |
 |---|---|---|---|
-| <YYYY-MM-DD> | <h> | <Chapters or labs> | <evidence/NN-....png> |
-| Total | <sum> | | |
+| 2026-11-12 | 10 | Pre-class guidance, chapters 1-14 and final exam | evidence/01-chapter-01.png to evidence/14-chapter-14.png, evidence/19-final-exam.png |
+| Total | 10 | | |
 
 ## Labs
 
@@ -34,10 +32,14 @@
 
 ## Final exam
 
-- Score: <score>
-- Date: <YYYY-MM-DD>
+- Score: 86/100 (passing score 70)
+- Date: 2026-11-12
 - Evidence: evidence/19-final-exam.png
 
 ## Skills summary
 
-<5 to 7 lines in English, first person, naming at least three concrete design techniques from the course.>
+I can design a system that survives the loss of one availability zone, with stateless replicas in two AZs behind ELB.
+I can configure primary/standby databases and replica sets with automatic failover, and explain why they need a majority.
+I can write elastic scaling rules with a real metric, a threshold and instance limits, and I know when not to scale a worker.
+I can pick a disaster recovery pattern from an RPO and an RTO, and show why a daily backup never meets an RPO in minutes.
+I also learned to use caching with DCS and secret management with CSMS to fix weaknesses I found in our own LMS docs.
